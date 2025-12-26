@@ -3,9 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grupp 36 projekt</title>
+    <title>Car Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    
+<body class="container mt-5">
+    <h1>Car Inventory</h1>
+
+    <div class="card p-3 mb-4">
+        <h3>Add/Edit Car</h3>
+        <form id="carForm">
+            <input type="hidden" id="carId"> <div class="mb-2">
+                <input type="text" id="brand" class="form-control" placeholder="Brand" required>
+            </div>
+            <div class="mb-2">
+                <input type="text" id="model" class="form-control" placeholder="Model" required>
+            </div>
+            <div class="mb-2">
+                <input type="text" id="color" class="form-control" placeholder="Color">
+            </div>
+            <div class="mb-2">
+                <input type="number" id="year" class="form-control" placeholder="Year">
+            </div>
+            <button type="submit" class="btn btn-primary" id="saveBtn">Save Car</button>
+        </form>
+    </div>
+
+    <h3>All Cars</h3>
+    <ul id="carList" class="list-group"></ul>
+    <script src="script.js"></script>
 </body>
 </html>
