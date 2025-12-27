@@ -30,7 +30,6 @@ async function getAllCars() {
 
 document.getElementById('carForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const id = document.getElementById('carId').value;
     const carData = {
         brand: document.getElementById('brand').value,

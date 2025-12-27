@@ -5,7 +5,7 @@ const port = 3000;
 
 const path = require('path');
 const db = new sqlite3.Database('tables.db');
-app.use(express.static('./'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 db.run(`
