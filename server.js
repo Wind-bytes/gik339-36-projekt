@@ -2,15 +2,15 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const app = express();
+const server = express();
 const port = 3000;
 
 const db = new sqlite3.Database('tables.db');
 
 // Utalizing the path module to serve static files inside the 'public' directory
 // Same as using express.static('./public')
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
+server.use(express.static(path.join(__dirname, 'public')));
+server.use(express.json());
 
 db.run(`
   CREATE TABLE IF NOT EXISTS cars (
@@ -22,7 +22,7 @@ db.run(`
   )
 `);
 
-app.get('/cars', (req, res) => {
+server.get('/cars', (req, res) => {
     const sql = "SELECT * FROM cars";
     db.all(sql, [], (err, rows) => {
         if (err) {
@@ -33,7 +33,7 @@ app.get('/cars', (req, res) => {
     });
 });
 
-app.post('/cars', (req, res) => {
+server.post('/cars', (req, res) => {
     const { brand, model, color, year } = req.body;
     const sql = "INSERT INTO cars (brand, model, color, year) VALUES (?, ?, ?, ?)";
     db.run(sql, [brand, model, color, year],function (err) {
@@ -42,7 +42,7 @@ app.post('/cars', (req, res) => {
     });
 });
 
-app.put('/cars/:id', (req, res) => {
+server.put('/cars/:id', (req, res) => {
     const id = req.params.id;
     const { brand, model, color, year } = req.body;
     const sql = "UPDATE cars SET brand = ?, model = ?, color = ?, year = ? WHERE id = ?";
@@ -52,7 +52,7 @@ app.put('/cars/:id', (req, res) => {
     });
 });
 
-app.delete('/cars/:id', (req, res) => {
+server.delete('/cars/:id', (req, res) => {
     const id = req.params.id;
     const sql = "DELETE FROM cars WHERE id = ?";
     db.run(sql, id, function (err) {
@@ -61,6 +61,6 @@ app.delete('/cars/:id', (req, res) => {
     });
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
 })
