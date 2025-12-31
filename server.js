@@ -1,10 +1,14 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
 const app = express();
 const port = 3000;
 
-const path = require('path');
 const db = new sqlite3.Database('tables.db');
+
+// Utalizing the path module to serve static files inside the 'public' directory
+// Same as using express.static('./public')
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
