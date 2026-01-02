@@ -1,5 +1,13 @@
 const API = "http://localhost:3000";
 
+function normalizeRegnr(v) {
+  return String(v || "").toUpperCase().replace(/\s+/g, "");
+}
+
+const REGNR_STANDARD = /^[A-Z]{3}\d{2}[A-Z0-9]$/; // ABC123 eller ABC12D
+const REGNR_PERSONAL = /^[A-Z0-9]{2,7}$/;         // t.ex. MINBIL (2–7 tecken)
+
+
 const reloadBtn = document.querySelector("#reload");
 
 const form = document.querySelector("#carForm");
@@ -8,6 +16,8 @@ const brandEl = document.querySelector("#brand");
 const regnrEl = document.querySelector("#regnr");
 const colorEl = document.querySelector("#color");
 const yearEl = document.querySelector("#year");
+const cancelBtn = document.querySelector("#cancelBtn");
+
 
 const formModeEl = document.querySelector("#formMode");
 const saveBtn = document.querySelector("#saveBtn");
@@ -15,6 +25,8 @@ const saveBtn = document.querySelector("#saveBtn");
 // Container där listan ska skapas dynamiskt
 const listContainer = document.querySelector("#listContainer");
 let listEl = null;
+let editingId = null;
+
 
 // Modal
 const msgModalEl = document.querySelector("#msgModal");
@@ -45,28 +57,73 @@ function ensureListEl() {
 
 function setCreateMode() {
   idEl.value = "";
+  editingId = null;
+updateEditingHighlight();
+
   formModeEl.textContent = "Skapar ny bil";
   saveBtn.textContent = "Spara";
   saveBtn.classList.remove("btn-success");
   saveBtn.classList.add("btn-primary");
+  cancelBtn.classList.add("d-none");
 }
+
+
 
 function setEditMode(car) {
   idEl.value = car.id;
-  brandEl.value = car.brand;
+  brandEl.value = String(car.brandId);
   regnrEl.value = car.regnr;
-  colorEl.value = car.color;
-  yearEl.value = car.year ?? "";
+  colorEl.value = String(car.color || "");
+  yearEl.value = car.year ? String(car.year) : "";
 
   formModeEl.textContent = `Redigerar bil #${car.id}`;
   saveBtn.textContent = "Uppdatera";
   saveBtn.classList.remove("btn-primary");
   saveBtn.classList.add("btn-success");
+
+  editingId = car.id;
+updateEditingHighlight();
+cancelBtn.classList.remove("d-none");
+
 }
 
 function borderColor(color) {
   return color || "#dee2e6";
 }
+
+async function loadBrands() {
+  const res = await fetch(`${API}/brands`);
+  const brands = await res.json();
+
+  brandEl.innerHTML = `<option value="">Välj bilmärke...</option>`;
+
+  brands.forEach((b) => {
+    const opt = document.createElement("option");
+    opt.value = b.id;
+    opt.textContent = b.name;
+    brandEl.appendChild(opt);
+  });
+}
+
+function fillYearSelect(from = 1950, to = 2026) {
+  yearEl.innerHTML = `<option value="">Välj år...</option>`;
+  for (let y = to; y >= from; y--) {
+    const opt = document.createElement("option");
+    opt.value = String(y);
+    opt.textContent = String(y);
+    yearEl.appendChild(opt);
+  }
+}
+
+function updateEditingHighlight() {
+  if (!listEl) return;
+
+  listEl.querySelectorAll(".car-card").forEach((el) => {
+    const id = Number(el.dataset.id);
+    el.classList.toggle("is-editing", id === Number(editingId));
+  });
+}
+
 
 async function loadCars() {
   const list = ensureListEl();
@@ -83,11 +140,21 @@ async function loadCars() {
 
     list.innerHTML = "";
 
-    cars.forEach((car) => {
-      const card = document.createElement("div");
-      card.className = "card shadow-sm";
-      card.style.borderColor = borderColor(car.color);
-      card.style.borderWidth = "2px";
+cars.forEach((car) => {
+  const card = document.createElement("div");
+
+  // ✅ viktiga rader för markering
+  card.className = "card shadow-sm car-card";
+  card.dataset.id = car.id;
+
+  // behåll din border-färglogik
+  card.style.borderColor = borderColor(car.color);
+  card.style.borderWidth = "2px";
+
+  // om denna bil är den som redigeras -> markera direkt vid render
+  if (Number(editingId) === car.id) {
+    card.classList.add("is-editing");
+  }
 
       card.innerHTML = `
         <div class="card-body d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center">
@@ -146,16 +213,52 @@ async function loadCars() {
 
 reloadBtn.addEventListener("click", loadCars);
 
+cancelBtn.addEventListener("click", () => {
+  form.reset();
+  setCreateMode();   // går tillbaka till "Skapar ny bil" + tar bort markering
+});
+
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const payload = {
-    id: idEl.value ? Number(idEl.value) : undefined,
-    brand: brandEl.value.trim(),
-    regnr: regnrEl.value.trim(),
-    color: colorEl.value.trim(),
-    year: yearEl.value ? Number(yearEl.value) : null,
-  };
+      const yearValue = yearEl.value ? Number(yearEl.value) : null;
+
+  if (yearValue !== null && (yearValue < 1950 || yearValue > 2026)) {
+    showModal("Fel", "Årtal måste vara mellan 1950 och 2026.");
+    return;
+  }
+
+  cancelBtn.addEventListener("click", () => {
+  form.reset();
+  setCreateMode();           // tar bort edit-markering + återställer knappar/labels
+  showModal("Info", "Redigering avbröts");
+});
+
+
+  const reg = normalizeRegnr(regnrEl.value);
+
+if (!(REGNR_STANDARD.test(reg) || REGNR_PERSONAL.test(reg))) {
+  showModal("Fel", "Regnr måste vara ABC123 / ABC12D eller personlig (2–7 tecken, A–Z/0–9).");
+  return;
+}
+
+
+const payload = {
+  id: idEl.value ? Number(idEl.value) : undefined,
+  brandId: Number(brandEl.value),
+  brand: undefined, // valfritt, bara för att inte råka skicka brand
+  regnr: reg,
+  color: colorEl.value.trim(),
+  year: yearValue,
+};
+
+if (!payload.brandId) {
+  showModal("Fel", "Välj ett bilmärke i listan.");
+  return;
+}
+
+
 
   const isEdit = Boolean(payload.id);
 
@@ -180,4 +283,7 @@ form.addEventListener("submit", async (e) => {
 
 // start
 setCreateMode();
-loadCars();
+fillYearSelect();
+loadBrands().then(loadCars);
+
+
