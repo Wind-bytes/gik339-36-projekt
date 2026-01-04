@@ -7,9 +7,9 @@ const brand = document.getElementById("brand");
 const model = document.getElementById("model");
 const year = document.getElementById("year");
 
-let editingId = null; //  track edit state
+let editingId = null; 
 
-// LOAD LIST (KRAV: alltid aktuell data)
+// LOAD LIST
 function loadCars() {
     fetch(API_URL)
         .then(res => res.json())
@@ -19,38 +19,46 @@ function loadCars() {
         });
 }
 
-// CREATE CARD (LIST + BUTTONS)
+// CREATE CARD
 function createCarCard(car) {
     const div = document.createElement("div");
-    div.className = "col-md-6";
+    div.className = "col-md-6 mb-3"; // Added margin for spacing
 
     div.innerHTML = `
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="card-body">
                 <h5>${car.brand} ${car.model}</h5>
                 <p>Year: ${car.year}</p>
-
-                <button class="btn btn-warning btn-sm me-2">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
+                <button class="btn btn-warning btn-sm me-2 edit-btn">Edit</button>
+                <button class="btn btn-danger btn-sm delete-btn">Delete</button>
             </div>
         </div>
     `;
 
-    // DELETE
-    div.querySelector(".btn-danger").onclick = () => {
-        fetch(`${API_URL}/${car.id}`, { method: "DELETE" })
-            .then(() => {
-                showMessage("Car deleted");
-                loadCars();
-            });
+    // DELETE WITH PROMPT
+    div.querySelector(".delete-btn").onclick = () => {
+        // The Prompt: Confirmation before action
+        const confirmed = confirm(`Are you sure you want to delete the ${car.brand}?`);
+        
+        if (confirmed) {
+            fetch(`${API_URL}/${car.id}`, { method: "DELETE" })
+                .then(() => {
+                    alert("Success: Car deleted from database."); // Success notification
+                    loadCars();
+                })
+                .catch(err => alert("Error: Could not delete car."));
+        }
     };
 
     // EDIT
-    div.querySelector(".btn-warning").onclick = () => {
+    div.querySelector(".edit-btn").onclick = () => {
         brand.value = car.brand;
         model.value = car.model;
         year.value = car.year;
         editingId = car.id;
+        
+        // Scroll to form so the user knows they are editing
+        form.scrollIntoView({ behavior: 'smooth' });
     };
 
     carList.appendChild(div);
@@ -74,17 +82,25 @@ form.addEventListener("submit", e => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(car)
     }).then(() => {
-        showMessage(editingId ? "Car updated" : "Car added");
+        // Notification logic
+        const message = editingId ? "Car successfully updated!" : "New car added!";
+        alert(message); // The Success Prompt
+        
         editingId = null;
         form.reset();
         loadCars();
+    }).catch(err => {
+        alert("Something went wrong saving the data.");
     });
 });
 
-// FEEDBACK MODAL 
+// FEEDBACK MODAL (Optional helper)
 function showMessage(text) {
-    document.getElementById("modalMessage").innerText = text;
-    new bootstrap.Modal(document.getElementById("feedbackModal")).show();
+    const modalElem = document.getElementById("feedbackModal");
+    if(modalElem) {
+        document.getElementById("modalMessage").innerText = text;
+        new bootstrap.Modal(modalElem).show();
+    }
 }
 
 // INITIAL LOAD
