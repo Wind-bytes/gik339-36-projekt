@@ -14,6 +14,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 db.serialize(() => {
+  // ✅ Aktivera foreign keys i SQLite (måste köras varje gång)
+  db.run("PRAGMA foreign_keys = ON");
+
   // 1) Tabell för märken
   db.run(`
     CREATE TABLE IF NOT EXISTS brands (
@@ -21,6 +24,7 @@ db.serialize(() => {
       name TEXT NOT NULL UNIQUE
     )
   `);
+
 
   // 2) Tabell för bilar (brandId istället för brand-text)
   db.run(`

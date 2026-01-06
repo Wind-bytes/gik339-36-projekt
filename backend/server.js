@@ -61,9 +61,12 @@ app.get("/cars", (req, res) => {
 
   db.all(sql, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
+    // ✅ se till att svar inte cacheas av browsern
+    res.set("Cache-Control", "no-store");
     res.json(rows);
   });
 });
+
 
 
 
