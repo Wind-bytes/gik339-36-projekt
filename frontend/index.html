@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="sv">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bilar</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="./styles.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
 
   <body class="bg-body-tertiary min-vh-100 d-flex flex-column">
     <header class="bg-body border-bottom">
-      <div class="container py-3 d-flex align-items-center justify-content-between">
-        <h1 class="h4 mb-0 fw-bold"><i class="bi bi-car-front-fill me-2"></i>Bilar</h1>
-        <button id="reload" class="btn btn-outline-secondary" type="button"><i class="bi bi-arrow-clockwise me-1"></i>Ladda om</button>
+      <div
+        class="container py-3 d-flex align-items-center justify-content-between"
+      >
+        <h1 class="h4 mb-0 fw-bold">
+          <i class="bi bi-car-front-fill me-2"></i>Bilar
+        </h1>
+        <button id="reload" class="btn btn-outline-secondary" type="button">
+          <i class="bi bi-arrow-clockwise me-1"></i>Ladda om
+        </button>
       </div>
     </header>
 
@@ -29,19 +41,30 @@
               </div>
             </div>
 
-            <hr class="my-3">
+            <hr class="my-3" />
 
             <form id="carForm" class="row g-2">
-              <input id="id" type="hidden">
+              <input id="id" type="hidden" />
 
               <div class="col-12 col-md-3">
+                <label for="brand" class="form-label visually-hidden"
+                  >Bilmärke</label
+                >
                 <select id="brand" class="form-select" required>
                   <option value="">Välj bilmärke...</option>
                 </select>
               </div>
 
               <div class="col-12 col-md-3">
-                <input id="regnr" class="form-control" placeholder="Regnr (ABC123)" required>
+                <label for="regnr" class="form-label visually-hidden"
+                  >Registreringsnummer</label
+                >
+                <input
+                  id="regnr"
+                  class="form-control"
+                  placeholder="Regnr (ABC123)"
+                  required
+                />
               </div>
 
               <div class="col-12 col-md-3">
@@ -63,19 +86,54 @@
                 </select>
               </div>
 
-              <div class="col-12 col-md-1 d-grid gap-2">
-                <button id="saveBtn" type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i>Spara</button>
-                <button id="cancelBtn" type="button" class="btn btn-outline-secondary d-none">Avbryt</button>
+              <div class="col-12 col-md-auto">
+                <div
+                  class="d-grid d-md-flex flex-md-wrap gap-2 justify-content-md-end"
+                >
+                  <button id="saveBtn" type="submit" class="btn btn-primary">
+                    <i class="bi bi-check2-circle me-1"></i>Spara
+                  </button>
+                  <button
+                    id="cancelBtn"
+                    type="button"
+                    class="btn btn-outline-secondary d-none"
+                  >
+                    Avbryt
+                  </button>
+                </div>
               </div>
 
               <div class="col-12 mt-2">
-                <div id="dropZone" class="border border-2 border-secondary-subtle rounded-3 p-4 text-center bg-body">
-                  <div class="fw-semibold mb-1"><i class="bi bi-cloud-arrow-up me-2"></i>Dra & släpp bild här</div>
-                  <div class="text-muted small mb-2">eller klicka för att välja (PNG / JPG)</div>
+                <div
+                  id="dropZone"
+                  class="border border-2 border-secondary-subtle rounded-3 p-4 text-center bg-body"
+                >
+                  <div class="fw-semibold mb-1">
+                    <i class="bi bi-cloud-arrow-up me-2"></i>Dra & släpp bild
+                    här
+                  </div>
+                  <div class="text-muted small mb-2">
+                    eller klicka för att välja (PNG / JPG)
+                  </div>
 
-                  <input type="file" id="imageInput" accept="image/png, image/jpeg" hidden>
-                  <img id="imagePreview" class="mt-3 d-none" alt="Förhandsvisning">
-                  <button type="button" id="removeImageBtn" class="btn btn-sm btn-outline-danger mt-3 d-none"><i class="bi bi-trash3 me-1"></i>Ta bort bild</button>
+                  <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/png, image/jpeg"
+                    hidden
+                  />
+                  <img
+                    id="imagePreview"
+                    class="mt-3 d-none"
+                    alt="Förhandsvisning"
+                  />
+                  <button
+                    type="button"
+                    id="removeImageBtn"
+                    class="btn btn-sm btn-outline-danger mt-3 d-none"
+                  >
+                    <i class="bi bi-trash3 me-1"></i>Ta bort bild
+                  </button>
                 </div>
               </div>
             </form>
@@ -84,21 +142,46 @@
 
         <div class="card shadow-sm border-0 mb-3">
           <div class="card-body">
-            <label for="brandSearch" class="form-label fw-semibold mb-2"><i class="bi bi-search me-1"></i>Sök (märke)</label>
-            <input id="brandSearch" class="form-control" placeholder="Sök på bilmärke...">
+            <label for="brandSearch" class="form-label fw-semibold mb-2"
+              ><i class="bi bi-search me-1"></i>Sök (märke)</label
+            >
+            <input
+              id="brandSearch"
+              class="form-control"
+              placeholder="Sök på bilmärke..."
+            />
           </div>
         </div>
 
-        <div id="listContainer" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3"></div>
+        <div
+          id="listContainer"
+          class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3"
+        ></div>
       </div>
     </main>
 
     <footer class="border-top bg-body py-3 mt-auto">
       <div class="container text-center text-muted small">
         Support:
-        <a class="text-decoration-none" href="mailto:h24morgr@du.se">h24morgr@du.se</a> ·
-        <a class="text-decoration-none" href="mailto:h24jonpe@du.se">h24jonpe@du.se</a> ·
-        <a class="text-decoration-none" href="mailto:h24hamli@du.se">h24hamli@du.se</a>
+        <a class="text-decoration-none" href="mailto:h24morgr@du.se"
+          >h24morgr@du.se</a
+        >
+        ·
+        <a class="text-decoration-none" href="mailto:h24jonpe@du.se"
+          >h24jonpe@du.se</a
+        >
+        ·
+        <a class="text-decoration-none" href="mailto:h24hamli@du.se"
+          >h24hamli@du.se</a
+        >
+        ·
+        <a class="text-decoration-none" href="mailto:h24hamli@du.se"
+          >h24samka@du.se</a
+        >
+        ·
+        <a class="text-decoration-none" href="mailto:h24hamli@du.se"
+          >h24@linba@du.se</a
+        >
       </div>
     </footer>
 
@@ -107,11 +190,22 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="msgModalTitle">Meddelande</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Stäng"
+            ></button>
           </div>
           <div class="modal-body" id="msgModalBody">...</div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              OK
+            </button>
           </div>
         </div>
       </div>

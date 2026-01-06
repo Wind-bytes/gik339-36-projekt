@@ -179,27 +179,27 @@ filtered.forEach((car) => {
     card.classList.add("is-editing");
   }
 
-      card.innerHTML = `
-        <div class="card-body d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center">
-        ${car.image ? `<img src="${API}/uploads/${car.image}" class="me-2" style="width:120px;height:80px;object-fit:cover;border-radius:6px;" />` : ""}
-          <div class="flex-grow-1">
-            <div class="d-flex align-items-center gap-2">
-              <div class="fw-semibold">${car.brand}</div>
-              <span class="badge text-bg-light">#${car.id}</span>
-            </div>
-            <div class="text-muted small">
-              Regnr: <span class="text-dark">${car.regnr}</span> •
-              Färg: <span class="text-dark">${car.color}</span> •
-              År: <span class="text-dark">${car.year ?? "-"}</span>
-            </div>
-          </div>
+card.innerHTML = `
+  <div class="card-body d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center">
+  ${car.image ? `<img src="${API}/uploads/${car.image}" class="me-2" style="width:120px;height:80px;object-fit:cover;border-radius:6px;" />` : ""}
+    <div class="flex-grow-1">
+      <div class="d-flex align-items-center gap-2">
+        <div class="fw-semibold">${car.brand}</div>
+      </div>
+      <div class="text-muted small">
+        Regnr: <span class="text-dark">${car.regnr}</span> •
+        Färg: <span class="text-dark">${car.color}</span> •
+        År: <span class="text-dark">${car.year ?? "-"}</span>
+      </div>
+    </div>
 
-          <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary btn-sm editBtn">Edit</button>
-            <button class="btn btn-outline-danger btn-sm deleteBtn">Ta bort</button>
-          </div>
-        </div>
-      `;
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-primary btn-sm editBtn">Edit</button>
+      <button class="btn btn-outline-danger btn-sm deleteBtn">Ta bort</button>
+    </div>
+  </div>
+`;
+
 
       card.querySelector(".editBtn").addEventListener("click", () => {
         setEditMode(car);
@@ -287,8 +287,19 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const isEdit = Boolean(payload.id);
+const isEdit = Boolean(payload.id);
+const needsFormData = Boolean(selectedImageFile) || (isEdit && removeImage);
 
+let res;
+if (!needsFormData) {
+  // ✅ Skicka JSON (minimikravet)
+  res = await fetch(`${API}/cars`, {
+    method: isEdit ? "PUT" : "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+} else {
+  // 📷 När bild hanteras, använd FormData
   const formData = new FormData();
   if (isEdit) formData.append("id", String(payload.id));
   formData.append("brandId", String(payload.brandId));
@@ -297,19 +308,19 @@ form.addEventListener("submit", async (e) => {
   if (payload.year !== null && payload.year !== undefined) {
     formData.append("year", String(payload.year));
   }
-
   if (selectedImageFile) {
     formData.append("image", selectedImageFile);
   }
-
   if (isEdit && removeImage) {
     formData.append("removeImage", "1");
   }
 
-const res = await fetch(`${API}/cars`, {
-  method: isEdit ? "PUT" : "POST",
-  body: formData,
-});
+  res = await fetch(`${API}/cars`, {
+    method: isEdit ? "PUT" : "POST",
+    body: formData,
+  });
+}
+
 
 
 
