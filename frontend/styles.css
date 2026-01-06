@@ -1,49 +1,19 @@
-#reload {
-    border-radius: 20px;
-    font-weight: 800;
-    color: black;
-}
-
-.h3 {
-    font-size: 2rem;
-    font-weight: 800;
-}
-
-.text-muted.mb-3 {
-    font-size: 2rem;
-    font-weight: 600;
-}
-
-.car-card.is-editing {
-    background-color: #e9ecef;
-    border-color: #0d6efd !important;
-    border-width: 2px !important;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
-}
-
-
-#dropZone {
-    cursor: pointer;
+body {
+  background:
+    radial-gradient(900px 500px at 20% 0%, rgba(13,110,253,.20), transparent 60%),
+    radial-gradient(900px 500px at 80% 10%, rgba(25,135,84,.16), transparent 60%),
+    #f8f9fa;
 }
 
 #dropZone.dragover {
-    background-color: #e7f1ff;
-    border-color: #0d6efd;
+  border-color: var(--bs-primary) !important;
+  background: rgba(var(--bs-primary-rgb), 0.06);
 }
 
 #imagePreview {
-    max-width: 200px;
-    max-height: 150px;
-    object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-.site-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #f8f9fa;
-    color: #6c757d;
-    font-size: 0.9rem;
-    margin-top: 20px;
+  max-width: 260px;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
