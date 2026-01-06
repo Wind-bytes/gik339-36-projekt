@@ -4,6 +4,8 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
+const fs = require("fs"); // <-- lägg till denna
+
 
 const app = express();
 const PORT = 3000;
@@ -171,6 +173,27 @@ app.put("/cars", upload.single("image"), (req, res) => {
         });
       }
     );
+  });
+});
+
+// --- klistra in under app.put("/cars", ...) och före app.listen ---
+app.delete("/cars/:id", (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) return res.status(400).json({ error: "Ogiltigt id" });
+
+  db.get("SELECT image FROM cars WHERE id = ?", [id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: "Hittades inte" });
+
+    db.run("DELETE FROM cars WHERE id = ?", [id], function (err2) {
+      if (err2) return res.status(400).json({ error: err2.message });
+
+      if (row.image) {
+        const p = path.join(__dirname, "uploads", row.image);
+        fs.unlink(p, () => {}); // ignorera ev. fel
+      }
+      res.json({ ok: true, deletedId: id });
+    });
   });
 });
 

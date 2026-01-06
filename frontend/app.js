@@ -148,7 +148,7 @@ async function loadCars() {
   list.innerHTML = `<div class="text-muted">Laddar...</div>`;
 
   try {
-    const res = await fetch(`${API}/cars`);
+    const res = await fetch(`${API}/cars`, { cache: 'no-store' });
     const cars = await res.json();
 
     const filtered = brandQuery
@@ -206,26 +206,31 @@ filtered.forEach((car) => {
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      card.querySelector(".deleteBtn").addEventListener("click", async () => {
-        const ok = confirm(`Ta bort ${car.brand} (${car.regnr})?`);
-        if (!ok) return;
+card.querySelector(".deleteBtn").addEventListener("click", async () => {
+  const ok = confirm(`Ta bort ${car.brand} (${car.regnr})?`);
+  if (!ok) return;
 
-        const res = await fetch(`${API}/cars/${car.id}`, { method: "DELETE" });
-        const data = await res.json();
+  const res = await fetch(`${API}/cars/${car.id}`, { method: "DELETE" });
+  const data = await res.json();
 
-        if (!res.ok) {
-          showModal("Fel", data.error || "Kunde inte radera");
-          return;
-        }
+  if (!res.ok) {
+    showModal("Fel", data.error || "Kunde inte radera");
+    return;
+  }
 
-        if (Number(idEl.value) === car.id) {
-          form.reset();
-          setCreateMode();
-        }
+  // Ta bort kortet direkt
+  card.remove();
 
-        showModal("Klart", "Bilen raderades");
-        loadCars();
-      });
+  if (Number(idEl.value) === car.id) {
+    form.reset();
+    setCreateMode();
+  }
+
+  showModal("Klart", "Bilen raderades");
+  // Ladda om i bakgrunden för att hålla listan synkad
+  loadCars();
+});
+
 
       list.appendChild(card);
     });
