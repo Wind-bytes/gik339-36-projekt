@@ -19,6 +19,7 @@ const REGNR_PERSONAL = /^[A-Z0-9]{2,7}$/;         // t.ex. MINBIL (2–7 tecken)
 
 
 app.use(cors());
+app.use(express.static('./frontend'));
 app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -39,11 +40,6 @@ const upload = multer({
   },
 });
 
-
-
-app.get("/", (req, res) => {
-  res.send("Servern fungerar!");
-});
 
 app.get("/cars", (req, res) => {
   const sql = `
@@ -204,5 +200,5 @@ app.delete("/cars/:id", (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Servern kör på http://localhost:${PORT}`);
+  console.log(`Servern kör på http://localhost:${PORT}/frontend`);
 });
