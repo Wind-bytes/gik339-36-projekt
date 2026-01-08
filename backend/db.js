@@ -14,7 +14,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 db.serialize(() => {
-  // ✅ Aktivera foreign keys i SQLite (måste köras varje gång)
+  // Aktivera foreign keys i SQLite 
   db.run("PRAGMA foreign_keys = ON");
 
   // 1) Tabell för märken
@@ -39,10 +39,10 @@ db.serialize(() => {
     )
   `);
 
-  // regnr unik (om ni vill behålla den regeln)
+  // regnr unik 
   db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_cars_regnr ON cars(regnr)`);
 
-  // 3) Seed: vanliga märken (lägg till/ta bort här)
+  // 3) vanliga märken vi använder 
   const commonBrands = [
     "Volvo","Saab","BMW","Audi","Mercedes-Benz","Volkswagen","Toyota","Honda",
     "Ford","Kia","Hyundai","Mazda","Nissan","Peugeot","Renault","Skoda","Opel",
