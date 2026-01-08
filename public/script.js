@@ -5,40 +5,46 @@ const form = document.getElementById("carForm");
 const brand = document.getElementById("brand");
 const model = document.getElementById("model");
 const year = document.getElementById("year");
-const searchInput = document.getElementById("searchInput"); // För sökfunktionen
-const totalCarsDisplay = document.getElementById("totalCars"); // För statistiken
+const searchInput = document.getElementById("searchInput");
+const totalCarsDisplay = document.getElementById("totalCars");
 
 let editingId = null; 
-let allCars = []; // Sparar bilar här för att kunna filtrera i sökningen
+let allCars = [];
 
 // LOAD LIST
 function loadCars() {
     fetch(API_URL)
         .then(res => res.json())
         .then(cars => {
-            allCars = cars; // Spara ner bilar för sökfunktionen
+            allCars = cars;
             renderCars(cars);
-        });
+        })
+        .catch(err => console.error("Kunde inte ladda bilar:", err));
 }
 
-// RENDER FUNCTION (Skapar listan)
+// RENDER FUNCTION
 function renderCars(cars) {
     carList.innerHTML = "";
-    cars.forEach(createCarCard);
+    cars.forEach(car => createCarCard(car));
     
-    // Uppdatera dashboard-räknaren
     if (totalCarsDisplay) {
         totalCarsDisplay.innerText = cars.length;
     }
 }
 
-// CREATE CARD (Anpassad till den nya designen)
+// CREATE CARD (Nu med fungerande bild-logik)
 function createCarCard(car) {
     const div = document.createElement("div");
-    div.className = "col-md-6 mb-3";
+    div.className = "col-md-6 col-lg-4 mb-3"; // Gjorde dem lite mindre så fler får plats
+
+    // Skapar en söksträng för bilden. Vi lägger till "car" för att få relevanta träffar.
+    // Vi använder en tjänst som heter LoremFlickr som är mer stabil för enkla projekt.
+    const imageUrl = `https://loremflickr.com/400/250/${car.brand},${car.model},car/all`;
 
     div.innerHTML = `
-        <div class="card car-card border-0 shadow-sm h-100">
+        <div class="card car-card border-0 shadow-sm h-100 overflow-hidden">
+            <img src="${imageUrl}" class="card-img-top" alt="${car.brand}" 
+                 style="height: 180px; object-fit: cover; background: #e9ecef;">
             <div class="card-body">
                 <span class="badge bg-primary-subtle text-primary mb-2">${car.year}</span>
                 <h5 class="card-title fw-bold text-dark mb-1">${car.brand}</h5>
@@ -55,38 +61,33 @@ function createCarCard(car) {
         </div>
     `;
 
-    // DELETE WITH PROMPT
+    // DELETE LOGIK
     div.querySelector(".delete-btn").onclick = () => {
-        const confirmed = confirm(`Are you sure you want to delete the ${car.brand}?`);
-        
-        if (confirmed) {
+        if (confirm(`Are you sure you want to delete the ${car.brand}?`)) {
             fetch(`${API_URL}/${car.id}`, { method: "DELETE" })
                 .then(() => {
-                    showMessage("Success: Car removed from garage.");
+                    showMessage("Success: Car removed.");
                     loadCars();
-                })
-                .catch(err => showMessage("Error: Could not delete car."));
+                });
         }
     };
 
-    // EDIT
+    // EDIT LOGIK
     div.querySelector(".edit-btn").onclick = () => {
         brand.value = car.brand;
         model.value = car.model;
         year.value = car.year;
         editingId = car.id;
         
-        // Byt text på knappen så man ser att man editerar
         form.querySelector("button").innerHTML = '<i class="bi bi-check-circle me-1"></i> Update Car';
         form.querySelector("button").classList.replace("btn-primary", "btn-warning");
-
         form.scrollIntoView({ behavior: 'smooth' });
     };
 
     carList.appendChild(div);
 }
 
-// FORM SUBMIT (CREATE + UPDATE)
+// FORM SUBMIT
 form.addEventListener("submit", e => {
     e.preventDefault();
 
@@ -104,44 +105,36 @@ form.addEventListener("submit", e => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(car)
     }).then(() => {
-        const message = editingId ? "Car successfully updated!" : "New car added to garage!";
-        showMessage(message);
+        showMessage(editingId ? "Car updated!" : "Car added!");
         
-        // Återställ formuläret
         editingId = null;
         form.reset();
         form.querySelector("button").innerHTML = '<i class="bi bi-plus-circle me-1"></i> Save Car';
         form.querySelector("button").classList.replace("btn-warning", "btn-primary");
         
         loadCars();
-    }).catch(err => {
-        showMessage("Something went wrong saving the data.");
-    });
+    }).catch(err => showMessage("Error saving car."));
 });
 
-
+// SEARCH
 if (searchInput) {
     searchInput.addEventListener("input", (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredCars = allCars.filter(car => 
-            car.brand.toLowerCase().includes(searchTerm) || 
-            car.model.toLowerCase().includes(searchTerm)
+        const term = e.target.value.toLowerCase();
+        const filtered = allCars.filter(c => 
+            c.brand.toLowerCase().includes(term) || c.model.toLowerCase().includes(term)
         );
-        renderCars(filteredCars);
+        renderCars(filtered);
     });
 }
 
-// FEEDBACK MODAL (Uppdaterad för att använda Bootstrap-modaler)
+// MODAL MESSAGE
 function showMessage(text) {
     const modalElem = document.getElementById("feedbackModal");
     if(modalElem) {
         document.getElementById("modalMessage").innerText = text;
         const bsModal = new bootstrap.Modal(modalElem);
         bsModal.show();
-    } else {
-        alert(text); // Fallback om modalen saknas
     }
 }
 
-// INITIAL LOAD
 loadCars();
