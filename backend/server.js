@@ -24,7 +24,7 @@ const REGNR_STANDARD = /^[A-Z]{3}\d{2}[A-Z0-9]$/;
 const REGNR_PERSONAL = /^[A-Z0-9]{2,7}$/;        
 
 
-// Middleware: globalt för alla requests 
+// globalt för alla requests 
 app.use(cors());                          // Tillåt CORS så frontenden kan anropa API:t
 app.use(express.static('./frontend'));    // Servera statiska filer  från frontend-mappen
 app.use(express.json());                  // Gör så att req.body kan läsa JSON 
@@ -153,12 +153,12 @@ app.post("/cars", upload.single("image"), (req, res) => {
 });
 
 
-//  ROUTE: Uppdatera bil (kan byta bild, behålla bild eller ta bort bild) 
+//  Uppdatera bil (kan byta bild, behålla bild eller ta bort bild) 
 app.put("/cars", upload.single("image"), (req, res) => {
   const { id, brandId, regnr, color, year, removeImage } = req.body;
   const cleanRegnr = String(regnr || "").trim().toUpperCase();
 
-  // Grundkrav: id + fält som måste finnas
+  // id + fält som måste finnas
   if (!id || !brandId || !regnr || !color) {
     return res.status(400).json({ error: "id, brandId, regnr och color är obligatoriska" });
   }
@@ -207,7 +207,7 @@ app.put("/cars", upload.single("image"), (req, res) => {
 });
 
 
-//  ROUTE: Ta bort bil (och radera bildfil om den finns) 
+//  ta bort bil (och radera bildfil om den finns) 
 app.delete("/cars/:id", (req, res) => {
   const id = Number(req.params.id);
 
