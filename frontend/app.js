@@ -110,12 +110,6 @@ function setEditMode(car) {
 }
 
 
-// Bestämmer färg på kanten runt kortet (fallback om ingen färg finns)
-function borderColor(color) {
-  return color || "#dee2e6";
-}
-
-
 // Hämtar bilmärken och fyller dropdownen
 async function loadBrands() {
   const res = await fetch(`${API}/brands`);
@@ -183,14 +177,6 @@ async function loadCars() {
       card.className = "card shadow-sm car-card";
       card.dataset.id = car.id;
 
-      // Sätter kantfärg baserat på bilens färg
-      card.style.borderColor = borderColor(car.color);
-      card.style.borderWidth = "2px";
-
-      // Om bilen är den vi redigerar, markera den
-      if (Number(editingId) === car.id) {
-        card.classList.add("is-editing");
-      }
 
       // Själva innehållet i kortet (inkl. bild om den finns)
       card.innerHTML = `
@@ -398,6 +384,7 @@ imageInput.addEventListener("change", () => {
   showPreview(file);
   removeImageBtn.classList.remove("d-none");
 });
+
 
 // Visuell effekt när du drar en fil över rutan
 dropZone.addEventListener("dragover", (e) => {

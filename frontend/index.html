@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bilar</title>
-
+    
     <!-- Bootstrap + ikoner + din egen CSS för utseende -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -19,7 +19,7 @@
   </head>
 
   <body class="bg-body-tertiary min-vh-100 d-flex flex-column">
-    <!-- Toppmeny: titel och knapp för att ladda om listan -->
+    <!-- titel och knapp för att ladda om listan -->
     <header class="bg-body border-bottom">
       <div
         class="container py-3 d-flex align-items-center justify-content-between"
@@ -35,7 +35,7 @@
 
     <main class="flex-grow-1">
       <div class="container py-4">
-        <!-- Formulär: skapa eller uppdatera en bil -->
+        <!-- skapa eller uppdatera en bil -->
         <div class="card shadow-sm border-0 mb-3">
           <div class="card-body">
             <div class="d-flex align-items-start justify-content-between gap-3">
@@ -113,7 +113,7 @@
                 </div>
               </div>
 
-              <!-- Bildruta: dra & släpp eller klicka för att välja bild -->
+              <!-- dra & släpp eller klicka för att välja bild -->
               <div class="col-12 mt-2">
                 <div
                   id="dropZone"
@@ -156,7 +156,7 @@
           </div>
         </div>
 
-        <!-- Sökfält: filtrerar listan på bilmärke -->
+        <!-- filtrerar listan på bilmärke -->
         <div class="card shadow-sm border-0 mb-3">
           <div class="card-body">
             <label for="brandSearch" class="form-label fw-semibold mb-2"
@@ -178,7 +178,7 @@
       </div>
     </main>
 
-    <!-- Sidfot: kontaktinfo -->
+    <!-- kontaktinfo -->
     <footer class="border-top bg-body py-3 mt-auto">
       <div class="container text-center text-muted small">
         Support:
@@ -204,7 +204,7 @@
       </div>
     </footer>
 
-    <!-- Modal: används för fel/klarmeddelanden -->
+    <!-- används för fel/klarmeddelanden -->
     <div class="modal fade" id="msgModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -231,7 +231,6 @@
       </div>
     </div>
 
-    <!-- Bootstrap (för modal osv) + din JavaScript-fil -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./app.js"></script>
   </body>
