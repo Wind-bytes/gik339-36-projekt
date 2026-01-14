@@ -113,13 +113,13 @@ app.post("/brands", (req, res) => {
 app.post("/cars", upload.single("image"), (req, res) => {
   const { brandId, regnr, color, year } = req.body;
 
-  // Rensa/standardisera regnr
-const cleanRegnr = normalizeRegnr(regnr);
+  // Rensa/standardisera regnr (versaler + inga mellanslag)
+  const cleanRegnr = normalizeRegnr(regnr);
 
-if (!(REGNR_STANDARD.test(cleanRegnr) || REGNR_PERSONAL.test(cleanRegnr))) {
+  //  Validera regnr i backend också
+  if (!(REGNR_STANDARD.test(cleanRegnr) || REGNR_PERSONAL.test(cleanRegnr))) {
   return res.status(400).json({ error: "Regnr måste vara ABC123 / ABC12D eller personlig (2–7 tecken)." });
 }
-
 
   // Om bild skickas: spara filnamnet i DB
   const image = req.file ? req.file.filename : null;
@@ -248,5 +248,5 @@ app.delete("/cars/:id", (req, res) => {
 
 //  Starta servern console loggar "servern kör på (port) /frontend"
 app.listen(PORT, () => {
-  console.log(`Servern kör på http://localhost:${PORT}/frontend`);
+  console.log(`Servern kör på http://localhost:${PORT}`);
 });
