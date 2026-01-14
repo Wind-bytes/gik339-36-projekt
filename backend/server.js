@@ -237,5 +237,5 @@ app.delete("/cars/:id", (req, res) => {
 
 //  Starta servern console loggar "servern kör på (port) /frontend"
 app.listen(PORT, () => {
-  console.log(`Servern kör på http://localhost:${PORT}/frontend`);
+  console.log(`Servern kör på http://localhost:${PORT}`);
 });
