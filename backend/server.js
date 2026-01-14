@@ -113,8 +113,13 @@ app.post("/brands", (req, res) => {
 app.post("/cars", upload.single("image"), (req, res) => {
   const { brandId, regnr, color, year } = req.body;
 
-  // Rensa/standardisera regnr
-  const cleanRegnr = String(regnr || "").trim().toUpperCase();
+  // Rensa/standardisera regnr (versaler + inga mellanslag)
+  const cleanRegnr = normalizeRegnr(regnr);
+
+  //  Validera regnr i backend också
+  if (!(REGNR_STANDARD.test(cleanRegnr) || REGNR_PERSONAL.test(cleanRegnr))) {
+    return res.status(400).json({ error: "Ogiltigt regnr-format." });
+  }
 
   // Om bild skickas: spara filnamnet i DB
   const image = req.file ? req.file.filename : null;

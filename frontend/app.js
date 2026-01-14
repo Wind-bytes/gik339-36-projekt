@@ -34,7 +34,7 @@ let listEl = null;
 let editingId = null;
 
 
-// Enkel “popup” för meddelanden (Bootstrap om den finns, annars alert)
+// Enkel “popup” för meddelanden 
 const msgModalEl = document.querySelector("#msgModal");
 const msgModalTitleEl = document.querySelector("#msgModalTitle");
 const msgModalBodyEl = document.querySelector("#msgModalBody");
