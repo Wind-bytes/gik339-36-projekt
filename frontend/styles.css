@@ -1,7 +1,7 @@
 body {
   background:
-    radial-gradient(900px 500px at 20% 0%, rgba(13,110,253,.20), transparent 60%),
-    radial-gradient(900px 500px at 80% 10%, rgba(25,135,84,.16), transparent 60%),
+    radial-gradient(900px 500px at 20% 0%, rgba(13, 110, 253, .20), transparent 60%),
+    radial-gradient(900px 500px at 80% 10%, rgba(25, 135, 84, .16), transparent 60%),
     #f8f9fa;
 }
 
@@ -16,4 +16,41 @@ body {
   object-fit: cover;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.car-card {
+  border-left: 10px solid transparent;
+}
+
+.car-card.color-red {
+  border-left-color: #dc3545;
+}
+
+.car-card.color-blue {
+  border-left-color: #0d6efd;
+}
+
+.car-card.color-green {
+  border-left-color: #198754;
+}
+
+.car-card.color-black {
+  border-left-color: #212529;
+}
+
+.car-card.color-white {
+  border-left-color: #dee2e6;
+}
+
+.car-card.color-gray {
+  border-left-color: #6c757d;
+}
+
+.car-card.color-silver {
+  border-left-color: #adb5bd;
+}
+
+/* valfritt: visa tydligare när man redigerar */
+.car-card.is-editing {
+  outline: 2px solid rgba(13, 110, 253, .35);
 }

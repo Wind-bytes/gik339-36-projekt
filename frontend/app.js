@@ -177,6 +177,25 @@ async function loadCars() {
       card.className = "card shadow-sm car-card";
       card.dataset.id = car.id;
 
+      const colorKey = String(car.color || "").trim().toLowerCase();
+
+
+const cssColorMap = {
+  "röd": "red",
+  "blå": "blue",
+  "grön": "green",
+  "svart": "black",
+  "vit": "white",
+  "grå": "gray",
+  "silver": "silver",
+};
+
+const cssColor = cssColorMap[colorKey];
+if (cssColor) {
+  card.style.borderLeft = `10px solid ${cssColor}`;
+}
+
+
 
       // Själva innehållet i kortet (inkl. bild om den finns)
       card.innerHTML = `

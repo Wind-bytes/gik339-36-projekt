@@ -114,7 +114,12 @@ app.post("/cars", upload.single("image"), (req, res) => {
   const { brandId, regnr, color, year } = req.body;
 
   // Rensa/standardisera regnr
-  const cleanRegnr = String(regnr || "").trim().toUpperCase();
+const cleanRegnr = normalizeRegnr(regnr);
+
+if (!(REGNR_STANDARD.test(cleanRegnr) || REGNR_PERSONAL.test(cleanRegnr))) {
+  return res.status(400).json({ error: "Regnr måste vara ABC123 / ABC12D eller personlig (2–7 tecken)." });
+}
+
 
   // Om bild skickas: spara filnamnet i DB
   const image = req.file ? req.file.filename : null;
@@ -156,7 +161,13 @@ app.post("/cars", upload.single("image"), (req, res) => {
 //  Uppdatera bil (kan byta bild, behålla bild eller ta bort bild) 
 app.put("/cars", upload.single("image"), (req, res) => {
   const { id, brandId, regnr, color, year, removeImage } = req.body;
-  const cleanRegnr = String(regnr || "").trim().toUpperCase();
+
+  const cleanRegnr = normalizeRegnr(regnr);
+
+if (!(REGNR_STANDARD.test(cleanRegnr) || REGNR_PERSONAL.test(cleanRegnr))) {
+  return res.status(400).json({ error: "Regnr måste vara ABC123 / ABC12D eller personlig (2–7 tecken)." });
+}
+
 
   // id + fält som måste finnas
   if (!id || !brandId || !regnr || !color) {
