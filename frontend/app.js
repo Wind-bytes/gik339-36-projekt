@@ -213,7 +213,7 @@ if (cssColor) {
           </div>
 
           <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary btn-sm editBtn">Uppdatera</button>
+            <button class="btn btn-outline-primary btn-sm editBtn">Ändra</button>
             <button class="btn btn-outline-danger btn-sm deleteBtn">Ta bort</button>
           </div>
         </div>
